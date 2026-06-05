@@ -138,7 +138,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
                     // 🔥 TEXT GLOW-UP WITH NEW NAME
                     Text(
-                      "VALUEKART\nCOMMAND CENTRE", // Name update kar diya with 2 lines for better alignment
+                      "GRABKRT\nCOMMAND CENTRE", // Name update kar diya with 2 lines for better alignment
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 26,
