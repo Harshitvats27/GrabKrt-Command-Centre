@@ -219,7 +219,7 @@ class AddProductScreen extends StatelessWidget {
 
               const SizedBox(height: 40),
 
-              /// UPLOAD BUTTON
+              /// UPLOAD BUTTON this is
               Container(
                 height: 60,
                 decoration: BoxDecoration(
