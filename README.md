@@ -1,4 +1,4 @@
-# GrabKart Admin / Vendor App 🏪
+# GrabKrt Admin / Vendor App 🏪
 
 A centralized B2B dashboard for internal administrators, local shop owners (vendors), and store managers to oversee operations. Part of the GrabKrt hyper-local e-commerce ecosystem.
 
@@ -72,7 +72,7 @@ Utilizes strict Role-Based Access Control (RBAC). The `All_Orders` root collecti
 
 ## 🎥 Demo Video
 
-Watch the app in action here: **[Demo Video Link](https://youtu.be/your-demo-link-here)**
+Watch the app in action here: **[Demo Video Link](https://drive.google.com/file/d/1xBh-d7LEByiDTw7x-J9TLnswTJhb5_TS/view?usp=sharing)**
 
 ---
 
