@@ -4,7 +4,7 @@ A centralized B2B dashboard for internal administrators, local shop owners (vend
 
 > **Status:** ✅ Successfully completed **14 days of Closed Testing** on Google Play Console and is now **live in Production**.
 ---
-![Grabkrt: Command Centre](assets/)
+![Grabkrt: Command Centre](assets/logo_dark.png)
 ---
 
 ## 🏗️ Tech Stack
