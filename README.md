@@ -6,7 +6,15 @@ A centralized B2B dashboard for internal administrators, local shop owners (vend
 ---
 ![Grabkrt: Command Centre](assets/logo_dark.png)
 ---
+**Dashboard Proof:**
 
+<table>
+  <tr>
+    <td><img src="assets/admin.jpeg" width="250"/></td>
+    
+  </tr>
+ 
+</table>
 ## 🏗️ Tech Stack
 
 * **Frontend Framework:** Flutter (Dart) — Cross-platform UI (Android & iOS)
