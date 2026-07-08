@@ -2,7 +2,7 @@ name: e_commerce_admin
 description: "A new Flutter project."
 publish_to: 'none'
 
-version: 1.0.0+1
+version: 1.0.0+5
 
 environment:
   sdk: ^3.8.1
@@ -43,18 +43,43 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   # Package moved here for best practices
   flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.4.7
 
 # 🔥 LOGO CONFIGURATION BLOCK
 flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/logo_light.png" # Default logo
+
+  # iOS 18+ Dark Mode Icon
+  image_path_ios_dark_tint: "assets/logo_dark.png"
+
+  # Android Adaptive Icon (Light Mode)
+  adaptive_icon_background: "#FFFFFF" # Background color (white)
+  adaptive_icon_foreground: "assets/logo_light.png"
+
+  # Android 13+ Themed/Monochrome Icon (Dark Mode ke liye)
+  monochrome_icon: "assets/logo_dark.png"
+
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: "assets/logo_light.png" # 👈 Light mode ka logo (Blue wala)
+
+  color_dark: "#121212"
+  image_dark: "assets/logo_dark.png" # 👈 Dark mode ka logo (Yeh zaroori hai!)
+
+  android_12:
+    color: "#FFFFFF"
+    image: "assets/logo_light.png"
+    color_dark: "#121212"
+    image_dark: "assets/logo_dark.png"
+
   android: true
   ios: true
-  image_path: "assets/app_logo.png"
-  adaptive_icon_background: "#101010"
-  adaptive_icon_foreground: "assets/app_logo.png"
 
 flutter:
   uses-material-design: true
 
-  # 🔥 ASSETS ENABLED HERE
+  # Yahan assets bhi add kar lo, kyunki tum logo images use kar rahe ho
   assets:
     - assets/

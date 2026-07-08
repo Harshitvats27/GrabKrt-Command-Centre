@@ -17,7 +17,6 @@ import '../screens/vendor_product_screen.dart';
 import '../utils/constant.dart';
 import '../utils/helpers/helper_function.dart';
 
-
 class DrawerWidget extends StatefulWidget {
   const DrawerWidget({super.key});
 
@@ -35,7 +34,9 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     final isDark = UHelperfunctions.isDarkTheme(context);
 
     return Drawer(
-      backgroundColor: isDark ? const Color(0xFF161616) : const Color(0xFF222222), // Dark Neon background
+      backgroundColor: isDark
+          ? const Color(0xFF161616)
+          : const Color(0xFF222222), // Dark Neon background
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topRight: Radius.circular(30.0),
@@ -46,11 +47,24 @@ class _DrawerWidgetState extends State<DrawerWidget> {
         children: [
           // 🔥 GLOWING HEADER
           Container(
-            padding: EdgeInsets.only(top: Get.height * 0.08, bottom: 20, left: 20, right: 20),
+            padding: EdgeInsets.only(
+              top: Get.height * 0.08,
+              bottom: 20,
+              left: 20,
+              right: 20,
+            ),
             decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: Colors.cyanAccent.withOpacity(0.5), width: 1)),
+              border: Border(
+                bottom: BorderSide(
+                  color: Colors.cyanAccent.withOpacity(0.5),
+                  width: 1,
+                ),
+              ),
               gradient: LinearGradient(
-                colors: [const Color(0xFF1A1A1A), Colors.cyanAccent.withOpacity(0.1)],
+                colors: [
+                  const Color(0xFF1A1A1A),
+                  Colors.cyanAccent.withOpacity(0.1),
+                ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -60,12 +74,25 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                 Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    boxShadow: [BoxShadow(color: Colors.cyanAccent.withOpacity(0.5), blurRadius: 15, spreadRadius: 2)],
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.cyanAccent.withOpacity(0.5),
+                        blurRadius: 15,
+                        spreadRadius: 2,
+                      ),
+                    ],
                   ),
                   child: CircleAvatar(
                     radius: 28.0,
                     backgroundColor: Colors.black,
-                    child: Text(firstLetter, style: const TextStyle(color: Colors.cyanAccent, fontSize: 24, fontWeight: FontWeight.bold)),
+                    child: Text(
+                      firstLetter,
+                      style: const TextStyle(
+                        color: Colors.cyanAccent,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 15),
@@ -73,9 +100,22 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(user != null ? userName : "Guest User", style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                      Text(
+                        user != null ? userName : "Guest User",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       const SizedBox(height: 4),
-                      Text("Command Center", style: TextStyle(color: Colors.cyanAccent.withOpacity(0.8), fontSize: 12)),
+                      Text(
+                        "Command Center",
+                        style: TextStyle(
+                          color: Colors.cyanAccent.withOpacity(0.8),
+                          fontSize: 12,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -88,14 +128,57 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               children: [
-                _buildDrawerItem(Icons.dashboard_outlined, 'Dashboard', Colors.cyanAccent, () => Get.offAll(() => const VendorDashboardScreen())),
-               // _buildDrawerItem(Icons.people_outline, 'Customers', Colors.pinkAccent, () => Get.to(() => const AllUsersScreen())),
-                _buildDrawerItem(Icons.shopping_bag_outlined, 'All Orders', Colors.orangeAccent, () => Get.to(() => const AllOrdersScreen())),
-                _buildDrawerItem(Icons.inventory_2_outlined, 'My Products', Colors.greenAccent, () => Get.to(() => VendorProductsScreen())),
-                _buildDrawerItem(Icons.category_outlined, 'Categories', Colors.purpleAccent, () => Get.to(() => const AllCategoriesScreen())),
-                _buildDrawerItem(Icons.branding_watermark_outlined, 'Brands', Colors.amberAccent, () => Get.to(() => const AllBrandsScreen())),
-                _buildDrawerItem(Icons.local_offer_outlined, 'Promo Codes', Colors.redAccent, () => Get.to(() =>  PromoCodeListScreen())),
-                _buildDrawerItem(Icons.storefront_outlined, 'My Stores', Colors.blueAccent, () => Get.to(() => const MyStoresListScreen())),
+                _buildDrawerItem(
+                  Icons.dashboard_outlined,
+                  'Dashboard',
+                  Colors.cyanAccent,
+                  () => Get.offAll(() => const VendorDashboardScreen()),
+                ),
+                // _buildDrawerItem(Icons.people_outline, 'Customers', Colors.pinkAccent, () => Get.to(() => const AllUsersScreen())),
+                _buildDrawerItem(
+                  Icons.storefront_outlined,
+                  'My Stores',
+                  Colors.blueAccent,
+                  () => Get.to(() => const MyStoresListScreen()),
+                ),
+                _buildDrawerItem(
+                  Icons.branding_watermark_outlined,
+                  'Brands',
+                  Colors.amberAccent,
+                  () => Get.to(() => const AllBrandsScreen()),
+                ),
+                _buildDrawerItem(
+                  Icons.category_outlined,
+                  'Categories',
+                  Colors.purpleAccent,
+                  () => Get.to(() => const AllCategoriesScreen()),
+                ),
+                _buildDrawerItem(
+                  Icons.category,
+                  'Brand Categories',
+                  Colors.blueAccent,
+                  () => Get.to(() => BrandCategoryListScreen()),
+                ),
+                _buildDrawerItem(
+                  Icons.inventory_2_outlined,
+                  'My Products',
+                  Colors.greenAccent,
+                  () => Get.to(() => VendorProductsScreen()),
+                ),
+
+                _buildDrawerItem(
+                  Icons.shopping_bag_outlined,
+                  'All Orders',
+                  Colors.orangeAccent,
+                  () => Get.to(() => const AllOrdersScreen()),
+                ),
+                _buildDrawerItem(
+                  Icons.local_offer_outlined,
+                  'Promo Codes',
+                  Colors.redAccent,
+                  () => Get.to(() => PromoCodeListScreen()),
+                ),
+                // _buildDrawerItem(Icons.storefront_outlined, 'My Stores', Colors.blueAccent, () => Get.to(() => const MyStoresListScreen())),
               ],
             ),
           ),
@@ -107,7 +190,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               user != null ? Icons.logout : Icons.login,
               user != null ? 'Logout' : 'Login',
               Colors.red,
-                  () async {
+              () async {
                 // 🔥 LOGOUT LOGIC ADDED
                 if (user != null) {
                   await FirebaseAuth.instance.signOut();
@@ -131,7 +214,12 @@ class _DrawerWidgetState extends State<DrawerWidget> {
   }
 
   // 🔥 CUSTOM ANIMATED DRAWER TILE
-  Widget _buildDrawerItem(IconData icon, String title, Color neonColor, VoidCallback onTap) {
+  Widget _buildDrawerItem(
+    IconData icon,
+    String title,
+    Color neonColor,
+    VoidCallback onTap,
+  ) {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
@@ -139,11 +227,22 @@ class _DrawerWidgetState extends State<DrawerWidget> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         hoverColor: neonColor.withOpacity(0.1),
         leading: Icon(icon, color: neonColor, size: 24),
-        title: Text(title, style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w600)),
-        trailing: Icon(Icons.arrow_forward_ios, color: Colors.white24, size: 14),
+        title: Text(
+          title,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        trailing: Icon(
+          Icons.arrow_forward_ios,
+          color: Colors.white24,
+          size: 14,
+        ),
         onTap: () {
           Get.back(); // Phele drawer close hoga
-          onTap();    // Phir screen change hogi
+          onTap(); // Phir screen change hogi
         },
       ),
     );

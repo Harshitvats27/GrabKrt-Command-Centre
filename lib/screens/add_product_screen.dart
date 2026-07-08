@@ -27,6 +27,7 @@ class AddProductScreen extends StatelessWidget {
       ),
       body: GetBuilder<AdminProductController>(
         builder: (c) => SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -284,6 +285,7 @@ class AddProductScreen extends StatelessWidget {
       decoration: _cardDecoration(isDark),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: DropdownButtonFormField<T>(
+        isExpanded: true,
         decoration: const InputDecoration(border: InputBorder.none),
         dropdownColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
         style: TextStyle(color: isDark ? Colors.white : Colors.black, fontSize: 16),

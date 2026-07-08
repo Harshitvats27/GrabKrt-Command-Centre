@@ -117,34 +117,117 @@ class AdminProductController extends GetxController {
   }
 
   /// ================= ATTRIBUTE DIALOG =================
+  /// ================= ATTRIBUTE DIALOG (PRO UI) =================
   void showAddAttributeDialog(BuildContext context) {
     TextEditingController nameCtrl = TextEditingController();
     TextEditingController valuesCtrl = TextEditingController();
 
-    Get.defaultDialog(
-      title: "Add Attribute",
-      content: Column(
-        children: [
-          TextField(controller: nameCtrl, decoration: InputDecoration(hintText: "Name (e.g. Size, Color)")),
-          TextField(controller: valuesCtrl, decoration: InputDecoration(hintText: "Values (e.g. 40, 41, Black)")),
+    // 🔥 Modern UI helper function (Same as variation dialog)
+    InputDecoration modernDecoration(String label, IconData icon) {
+      return InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon, color: Colors.blue),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide(color: Colors.grey.shade300),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide(color: Colors.grey.shade300),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: const BorderSide(color: Colors.blue, width: 2),
+        ),
+        filled: true,
+        fillColor: Colors.grey.shade50,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+      );
+    }
+
+    // 🔥 Using native AlertDialog to prevent keyboard overflows
+    Get.dialog(
+      AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Row(
+          children: const [
+            Icon(Icons.category, color: Colors.blue),
+            SizedBox(width: 10),
+            Expanded(child: Text("Add Attribute", style: TextStyle(fontWeight: FontWeight.bold))),
+          ],
+        ),
+        contentPadding: const EdgeInsets.all(20),
+        content: SizedBox(
+          width: MediaQuery.of(context).size.width * 0.9,
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Text("Define Product Attribute", style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black87)),
+                const SizedBox(height: 15),
+
+                TextField(
+                  controller: nameCtrl,
+                  decoration: modernDecoration("Name (e.g. Size, Color)", Icons.text_fields),
+                ),
+                const SizedBox(height: 15),
+
+                TextField(
+                  controller: valuesCtrl,
+                  decoration: modernDecoration("Values (e.g. 40, 41, Black)", Icons.list),
+                  maxLines: 2, // Thoda bada text field taaki zyada values aaraam se type ho sake
+                ),
+                const SizedBox(height: 5),
+
+                // User ke liye ek choti si tip
+                const Text(
+                    "Separate multiple values with a comma (,)",
+                    style: TextStyle(fontSize: 12, color: Colors.grey, fontStyle: FontStyle.italic)
+                ),
+              ],
+            ),
+          ),
+        ),
+        actionsPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: const Text("Cancel", style: TextStyle(color: Colors.grey, fontSize: 16, fontWeight: FontWeight.bold)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            ),
+            onPressed: () {
+              if (nameCtrl.text.trim().isNotEmpty && valuesCtrl.text.trim().isNotEmpty) {
+                List<String> valList = valuesCtrl.text.split(',').map((e) => e.trim()).toList();
+                attributes.add(ProductAttributeModel(name: nameCtrl.text.trim(), values: valList));
+                update();
+                Get.back();
+              } else {
+                Get.snackbar(
+                  "Error",
+                  "Fields cannot be empty",
+                  backgroundColor: Colors.redAccent,
+                  colorText: Colors.white,
+                  snackPosition: SnackPosition.BOTTOM,
+                );
+              }
+            },
+            child: const Text("Add Attribute", style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
         ],
       ),
-      confirm: ElevatedButton(
-        onPressed: () {
-          if (nameCtrl.text.trim().isNotEmpty && valuesCtrl.text.trim().isNotEmpty) {
-            List<String> valList = valuesCtrl.text.split(',').map((e) => e.trim()).toList();
-            attributes.add(ProductAttributeModel(name: nameCtrl.text.trim(), values: valList));
-            update();
-            Get.back();
-          } else {
-            Get.snackbar("Error", "Fields cannot be empty");
-          }
-        },
-        child: Text("Add"),
-      ),
+      barrierDismissible: false,
     );
   }
 
+  /// ================= VARIATION DIALOG =================
   /// ================= VARIATION DIALOG =================
   void showAddVariationDialog(BuildContext context) {
     if (attributes.isEmpty) {
@@ -160,92 +243,195 @@ class AdminProductController extends GetxController {
 
     Map<String, String> selectedAttributes = {};
     File? vImageFile;
-
-    Get.defaultDialog(
-      title: "Add New Variation",
-      content: StatefulBuilder(
-          builder: (context, setState) {
-            return SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text("Select Combination:", style: TextStyle(fontWeight: FontWeight.bold)),
-                  ...attributes.map((attr) {
-                    return DropdownButtonFormField<String>(
-                      decoration: InputDecoration(labelText: attr.name),
-                      items: attr.values?.map((val) => DropdownMenuItem(value: val, child: Text(val))).toList(),
-                      onChanged: (val) {
-                        if (val != null && attr.name != null) {
-                          selectedAttributes[attr.name!] = val;
-                        }
-                      },
-                    );
-                  }).toList(),
-                  Divider(),
-
-                  TextField(controller: vSkuCtrl, decoration: InputDecoration(hintText: "Variation SKU (e.g. IP-128-BLK)")),
-                  Row(
+    InputDecoration modernDecoration(String label, IconData icon) {
+      return InputDecoration(
+        labelText: label, // 🔥 Yahi wo jadoo hai jisse text upar animate hoga
+        prefixIcon: Icon(icon, color: Colors.blue),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide(color: Colors.grey.shade300),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide(color: Colors.grey.shade300),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: const BorderSide(color: Colors.blue, width: 2),
+        ),
+        filled: true,
+        fillColor: Colors.grey.shade50,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+      );
+    }
+    // 🔥 FIX: Swapped Get.defaultDialog for Get.dialog(AlertDialog())
+    // AlertDialog automatically handles the keyboard popping up beautifully!
+    Get.dialog(
+      AlertDialog(
+        // 🔥 Dialog ko ek smooth rounded shape di hai
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Row(
+          children: const [
+            Icon(Icons.style, color: Colors.blue),
+            SizedBox(width: 10),
+            Expanded(child: Text("Add New Variation", style: TextStyle(fontWeight: FontWeight.bold))),
+          ],
+        ),
+        contentPadding: const EdgeInsets.all(20),
+        content: StatefulBuilder(
+            builder: (context, setState) {
+              return SizedBox(
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Expanded(child: TextField(controller: vPriceCtrl, decoration: InputDecoration(hintText: "Price"), keyboardType: TextInputType.number)),
-                      SizedBox(width: 10),
-                      Expanded(child: TextField(controller: vSalePriceCtrl, decoration: InputDecoration(hintText: "Sale Price"), keyboardType: TextInputType.number)),
+                      const Text("Select Combination:", style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black87)),
+                      const SizedBox(height: 10),
+                      ...attributes.map((attr) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 15),
+                          child: DropdownButtonFormField<String>(
+                            isExpanded: true,
+                            decoration: modernDecoration(attr.name ?? "Attribute", Icons.category),
+                            items: attr.values?.map((val) => DropdownMenuItem(value: val, child: Text(val))).toList(),
+                            onChanged: (val) {
+                              if (val != null && attr.name != null) {
+                                selectedAttributes[attr.name!] = val;
+                              }
+                            },
+                          ),
+                        );
+                      }).toList(),
+                      const Divider(height: 20, thickness: 1),
+
+                      TextField(
+                        controller: vSkuCtrl,
+                        decoration: modernDecoration("Variation SKU", Icons.qr_code),
+                      ),
+                      const SizedBox(height: 15),
+
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: vPriceCtrl,
+                              decoration: modernDecoration("Price", Icons.currency_rupee),
+                              keyboardType: TextInputType.number,
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: TextField(
+                              controller: vSalePriceCtrl,
+                              decoration: modernDecoration("Sale Price", Icons.currency_rupee),
+                              keyboardType: TextInputType.number,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 15),
+
+                      TextField(
+                        controller: vStockCtrl,
+                        decoration: modernDecoration("Stock Quantity", Icons.inventory_2),
+                        keyboardType: TextInputType.number,
+                      ),
+                      const SizedBox(height: 15),
+
+                      TextField(
+                        controller: vDescCtrl,
+                        decoration: modernDecoration("Short Description", Icons.description),
+                        maxLines: 2,
+                      ),
+                      const SizedBox(height: 20),
+
+                      // Image Picker UI Update
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.blue.withOpacity(0.5), style: BorderStyle.solid),
+                          borderRadius: BorderRadius.circular(15),
+                          color: Colors.blue.withOpacity(0.05),
+                        ),
+                        child: vImageFile == null
+                            ? TextButton.icon(
+                          onPressed: () async {
+                            final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
+                            if (picked != null) setState(() => vImageFile = File(picked.path));
+                          },
+                          icon: const Icon(Icons.add_a_photo, size: 28),
+                          label: const Text("Tap to Pick Image", style: TextStyle(fontSize: 16)),
+                        )
+                            : Column(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.file(vImageFile!, height: 100, width: double.infinity, fit: BoxFit.cover),
+                            ),
+                            const SizedBox(height: 8),
+                            OutlinedButton.icon(
+                              onPressed: () => setState(() => vImageFile = null),
+                              icon: const Icon(Icons.delete, color: Colors.red),
+                              label: const Text("Remove Image", style: TextStyle(color: Colors.red)),
+                              style: OutlinedButton.styleFrom(side: const BorderSide(color: Colors.redAccent)),
+                            )
+                          ],
+                        ),
+                      ),
                     ],
                   ),
-                  TextField(controller: vStockCtrl, decoration: InputDecoration(hintText: "Stock Quantity"), keyboardType: TextInputType.number),
-                  TextField(controller: vDescCtrl, decoration: InputDecoration(hintText: "Short Description")),
-                  SizedBox(height: 10),
+                ),
+              );
+            }
+        ),
+        actionsPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: const Text("Cancel", style: TextStyle(color: Colors.grey, fontSize: 16, fontWeight: FontWeight.bold)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            ),
+            onPressed: () async {
+              if (vPriceCtrl.text.isEmpty || vStockCtrl.text.isEmpty || vImageFile == null || selectedAttributes.length != attributes.length) {
+                Get.snackbar("Error", "Please fill Price, Stock, pick Image, and select ALL attributes.", backgroundColor: Colors.redAccent, colorText: Colors.white);
+                return;
+              }
 
-                  vImageFile == null
-                      ? ElevatedButton.icon(
-                    onPressed: () async {
-                      final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
-                      if (picked != null) setState(() => vImageFile = File(picked.path));
-                    },
-                    icon: Icon(Icons.add_a_photo),
-                    label: Text("Pick Variation Image"),
-                  )
-                      : Column(
-                    children: [
-                      Image.file(vImageFile!, height: 80, fit: BoxFit.cover),
-                      TextButton(onPressed: () => setState(() => vImageFile = null), child: Text("Remove"))
-                    ],
-                  ),
-                ],
-              ),
-            );
-          }
+              Get.dialog(const Center(child: CircularProgressIndicator()), barrierDismissible: false);
+
+              String imgUrl = await uploadImageToStorage(vImageFile!, 'variations');
+
+              variations.add(ProductVariationModel(
+                id: DateTime.now().millisecondsSinceEpoch.toString(),
+                attributeValues: selectedAttributes,
+                sku: vSkuCtrl.text.trim(),
+                price: double.tryParse(vPriceCtrl.text.trim()) ?? 0.0,
+                salePrice: double.tryParse(vSalePriceCtrl.text.trim()) ?? 0.0,
+                stock: int.tryParse(vStockCtrl.text.trim()) ?? 0,
+                image: imgUrl,
+                description: vDescCtrl.text.trim(),
+              ));
+
+              update();
+              Get.back(); // Closes the loading indicator
+              Get.back(); // Closes the variation dialog
+            },
+            child: const Text("Save Variation", style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+        ],
       ),
-      confirm: ElevatedButton(
-        onPressed: () async {
-          if (vPriceCtrl.text.isEmpty || vStockCtrl.text.isEmpty || vImageFile == null || selectedAttributes.length != attributes.length) {
-            Get.snackbar("Error", "Please fill Price, Stock, pick Image, and select ALL attributes.");
-            return;
-          }
-
-          Get.dialog(Center(child: CircularProgressIndicator()), barrierDismissible: false);
-
-          String imgUrl = await uploadImageToStorage(vImageFile!, 'variations');
-
-          variations.add(ProductVariationModel(
-            id: DateTime.now().millisecondsSinceEpoch.toString(),
-            attributeValues: selectedAttributes,
-            sku: vSkuCtrl.text.trim(),
-            price: double.tryParse(vPriceCtrl.text.trim()) ?? 0.0,
-            salePrice: double.tryParse(vSalePriceCtrl.text.trim()) ?? 0.0,
-            stock: int.tryParse(vStockCtrl.text.trim()) ?? 0,
-            image: imgUrl,
-            description: vDescCtrl.text.trim(),
-          ));
-
-          update();
-          Get.back();
-          Get.back();
-        },
-        child: Text("Save Variation"),
-      ),
+      barrierDismissible: false,
     );
   }
-
   /// ================= UPLOAD PRODUCT =================
   Future<void> uploadProduct() async {
     try {
